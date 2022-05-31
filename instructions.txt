@@ -1,0 +1,49 @@
+product page wherever you want:
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+  <div class="inventoryNote form__label">
+  {% if current_variant.available %}
+    {% if current_variant.inventory_quantity > 0 and current_variant.inventory_quantity <= 10 %}We have {{ current_variant.inventory_quantity }} in stock
+{% elsif current_variant.inventory_quantity > 10 %}We have more than 10 in stock
+    {% endif %}
+  {% endif %}
+</div>
+
+
+theme.liquid before </head>
+
+<script> 
+      var variantStock = {};
+</script>
+
+in main product section before schema:
+
+<script>
+  {% for variant in product.variants %}
+    variantStock[{{- variant.id -}}] = {{ variant.inventory_quantity }};
+  {% endfor %}
+</script>
+
+end of theme.js OR custom js file
+
+if (ShopifyAnalytics.meta.page.pageType == "product") {
+    var variantBtns = document.getElementsByClassName("product-option-item"); //find your variant picker button swatches, change classname
+    for(let i = 0 ; i<variantBtns.length; i++) {
+      variantBtns[i].addEventListener("click", function() {
+        if(variantBtns[i].classList.contains("soldout-opt")) {
+        const inventoryNote = document.querySelector('.inventoryNote');
+              inventoryNote.textContent = "Out of Stock.";
+        } else {
+        var variantsId = ShopifyAnalytics.meta.product.variants[i].id;
+        const inventoryNote = document.querySelector('.inventoryNote');
+        const inventoryHtml = `We have ${variantStock[variantsId]} in stock`;
+        const inventryHighHtml = `We have more than 10 in stock`;
+            if (variantStock[variantsId] > 0 && variantStock[variantsId] <= 10) {
+              inventoryNote.textContent = inventoryHtml;
+            } else if (variantStock[this.variant.id] > 10) {
+              inventoryNote.textContent = inventryHighHtml;
+            }
+        }
+     });
+    }
+  }
