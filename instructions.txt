@@ -27,10 +27,10 @@ in main product section before schema:
 end of theme.js OR custom js file
 
 if (ShopifyAnalytics.meta.page.pageType == "product") {
-    var variantBtns = document.getElementsByClassName("product-option-item"); //find your variant picker button swatches, change classname
+    var variantBtns = document.getElementsByClassName("product-option-item"); //find your variant picker button swatches's class and change classname
     for(let i = 0 ; i<variantBtns.length; i++) {
       variantBtns[i].addEventListener("click", function() {
-        if(variantBtns[i].classList.contains("soldout-opt")) {
+        if(variantBtns[i].classList.contains("soldout-opt")) { //change according to the class script is toggling when product variant is out of stock
         const inventoryNote = document.querySelector('.inventoryNote');
               inventoryNote.textContent = "Out of Stock.";
         } else {
